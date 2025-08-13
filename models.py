@@ -1,4 +1,3 @@
-# Models like User & Blogs (One to many blog)
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from datetime import datetime
 from db import orm
@@ -12,6 +11,7 @@ class User(orm.Model):
     email = Column("email",String(100), unique=True, nullable=False)
     created_at = Column("created_at",DateTime, default=datetime.utcnow)
     updated_at = Column("updated_at",DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    blogs = orm.relationship('Blog', backref='user', lazy=True)
 
     def __init__(self, name, email):
         self.name = name
@@ -31,7 +31,7 @@ class Blog(orm.Model):
     __tablename__ = 'blogs'
 
     id = Column("id", Integer, primary_key=True)
-    user_id = Column("user_id", Integer, ForeignKey('users.id'), nullable=False)  # <-- یہاں اصلاح کی گئی
+    user_id = Column("user_id", Integer, ForeignKey('users.id'), nullable=False) 
     detail = Column("detail", String(255), nullable=False)
     created_at = Column("created_at", DateTime, default=datetime.utcnow)
     updated_at = Column("updated_at", DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

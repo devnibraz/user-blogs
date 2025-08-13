@@ -1,4 +1,3 @@
-# Flask app with SQLAlchemy ORM & blueprints
 from flask import Flask
 from db import orm
 from blueprints.user import user_bp
