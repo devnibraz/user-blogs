@@ -7,7 +7,7 @@ user_bp = Blueprint('user_bp', __name__, url_prefix='/user')
 @user_bp.route('/', methods=['GET'])
 def get_users():
     users = User.query.all()
-    return jsonify([u.to_dict() for u in users])
+    return jsonify([u.to_dict() for u in users]), 200
 
 @user_bp.route('/', methods=['POST'])
 def add_user():
