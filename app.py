@@ -3,9 +3,13 @@ from flask import Flask
 from db import orm
 from blueprints.user import user_bp
 from blueprints.blog import blog_bp
+from dotenv import load_dotenv 
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/hobbies'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MYSQL_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 orm.init_app(app)
