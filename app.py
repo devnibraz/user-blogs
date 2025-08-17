@@ -3,7 +3,6 @@ from db import orm
 from flask_migrate import Migrate
 from flask_caching import Cache
 
-
 from dotenv import load_dotenv 
 import os
 
@@ -22,7 +21,6 @@ cache = Cache(app)
 from blueprints.user import user_bp
 from blueprints.blog import blog_bp
 
-# Register Blueprints
 app.register_blueprint(user_bp)
 app.register_blueprint(blog_bp)
 
