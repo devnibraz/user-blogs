@@ -13,6 +13,8 @@ app.config['CACHE_TYPE'] = os.getenv('CACHE_TYPE')
 app.config['CACHE_DEFAULT_TIMEOUT'] = os.getenv('CACHE_DEFAULT_TIMEOUT')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MYSQL_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS')
+app.config['UPLOAD_FOLDER'] = os.getenv('UPLOAD_FOLDER')
+app.config['ALLOWED_EXTENSIONS'] = os.getenv('ALLOWED_EXTENSIONS').split(', ')
 
 orm.init_app(app)
 migrate = Migrate(app, orm)
@@ -28,3 +30,5 @@ if __name__ == '__main__':
     with app.app_context():
         orm.create_all()
     app.run(debug=True)
+
+
