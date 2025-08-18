@@ -1,18 +1,54 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from db import orm
 from models import User
+import os
+from werkzeug.utils import secure_filename
+from flask import current_app
 
 user_bp = Blueprint('user_bp', __name__, url_prefix='/user')
 
+
+
+def allow_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+
+@user_bp.route('/upload/<int:user_id>', methods=['POST'])
+def upload_avatar(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    if 'avatar' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['avatar']
+
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    if file and allow_file(file.filename):
+        filename = secure_filename(file.filename)
+        upload_folder = current_app.config['UPLOAD_FOLDER']
+        os.makedirs(upload_folder, exist_ok=True) 
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+
+        user.avatar = filename
+        orm.session.commit()
+
+        return jsonify({"message": "Avatar uploaded", "user": user.to_dict()}), 200
+    else:
+        return jsonify({"error": "File type not allowed"}), 400
+
+
 @user_bp.route('/', methods=['GET'])
-def get():
+def get_users():
     from app import cache
     @cache.cached(timeout=30)
     def get_users():
         users = User.query.all()
         return jsonify([u.to_dict() for u in users]), 200
     return get_users()
-
 @user_bp.route('/', methods=['POST'])
 def add_user():
     data = request.get_json()

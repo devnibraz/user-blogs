@@ -10,14 +10,16 @@ class User(orm.Model):
     name = Column(String(100), nullable=False)
     full_name = Column(String(100), nullable=True)
     email = Column(String(100), unique=True, nullable=False)
+    avatar= Column(String(255), nullable=True, unique=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     blogs = orm.relationship('Blog', backref='user', lazy=True)
 
-    def __init__(self, name, email, full_name):
+    def __init__(self, name, email, full_name, avatar):
         self.name = name
         self.full_name = full_name
         self.email = email
+        self.avatar = avatar
 
     def to_dict(self):
         return {
@@ -25,6 +27,7 @@ class User(orm.Model):
             "name": self.name,
             "email": self.email,
             "full_name": self.full_name,
+            "avatar": self.avatar,
             "created_at": self.created_at,
             "updated_at": self.updated_at
         }
